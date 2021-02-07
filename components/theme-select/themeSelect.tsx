@@ -6,7 +6,7 @@ export const ThemeSelect = ({ classes }: { classes?: string }): JSX.Element => {
   return (
     <div className={`flex justify-end ${classes}`}>
       <select
-        className="px-2 py-1 rounded shadow-md font-sans"
+        className="px-2 py-1 rounded shadow-md font-sans text-gray-800"
         value={theme}
         onChange={(e) => setTheme(e.target.value as THEME)}
         onBlur={(e) => setTheme(e.target.value as THEME)}

@@ -1,14 +1,7 @@
+import { AppProps } from 'next/app'
 import '../styles/globals.css'
 
-function MyApp({
-  Component,
-  pageProps,
-}: {
-  Component: React.FC
-  pageProps: {
-    [x: string]: string
-  }
-}): JSX.Element {
+function MyApp({ Component, pageProps }: AppProps): JSX.Element {
   return <Component {...pageProps} />
 }
 

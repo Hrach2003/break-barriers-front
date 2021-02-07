@@ -1,14 +1,50 @@
 import Link from 'next/link'
 import Image from 'next/image'
+import { useRouter } from 'next/router'
 import { Dash } from '../../components/dash/dash'
 import { Input } from '../../components/input/input'
 import { ThemeSelect } from '../../components/theme-select/themeSelect'
-import { Center } from '../../atoms/center'
+import { useForm } from 'react-hook-form'
+import { getAPI } from '../../hooks/api'
+import { AxiosResponse } from 'axios'
+import Cookies from 'js-cookie'
+import { useState } from 'react'
+
+interface LoginResponse {
+  token: string
+}
 
 const Login = (): JSX.Element => {
+  const { register, handleSubmit, reset, errors } = useForm()
+  const [serverError, setServerError] = useState(false)
+  const router = useRouter()
+  const onSubmit = async (data: {
+    username: string
+    password: string
+  }): Promise<void> => {
+    try {
+      console.log(data)
+      const {
+        data: { token },
+      } = (await getAPI()({
+        url: '/auth/login/',
+        method: 'POST',
+        data,
+      })) as AxiosResponse<LoginResponse>
+      Cookies.set('jwt_token', token, {
+        secure: true,
+        expires: 10,
+      })
+      router.replace('/profile')
+    } catch (error) {
+      setServerError(true)
+      console.error(error)
+      reset()
+    }
+  }
   return (
-    <div className="dark:bg-gray-600 bg-gray-50">
-      <Center classes="h-screen w-10/12 mx-auto md:grid grid-cols-2 gap-4">
+    <div className="dark:bg-gray-600 min-h-screen bg-gray-50">
+      <div className="h-full w-10/12 mx-auto grid grid-cols-1 md:grid-cols-2 md:gap-4 md:pt-24">
         <div className="my-2 md:my-0">
           <Image
             className="w-full h-full object-contain"
@@ -20,10 +56,15 @@ const Login = (): JSX.Element => {
           />
           <Dash />
         </div>
-        <div className="mx-auto md:mx-0">
+        <div>
           <h1 className="text-5xl mb-8 font-sans font-semibold dark:text-gray-200 text-gray-800">
             Break Barriers
           </h1>
+          {serverError && (
+            <p className="px-4 py-2 bg-red-800 bg-opacity-25 rounded-md my-2 border-2 border-red-900 text-gray-200 font-semibold text-center">
+              Username or password is wrong
+            </p>
+          )}
           <a
             href="/auth/google/"
             className="overflow-hidden w-full h-12 relative flex items-center rounded-md dark:bg-gray-900 bg-white shadow-lg hover:bg-gray-200 dark:hover:bg-gray-800 focus:bg-gray-800"
@@ -43,11 +84,28 @@ const Login = (): JSX.Element => {
 
           <form
             className="flex flex-col w-full"
-            action="/api/auth/login/"
-            method="POST"
+            onSubmit={handleSubmit(onSubmit)}
           >
-            <Input placeholder="Username: " type="text" name="username" />
-            <Input placeholder="Password: " type="password" name="password" />
+            <Input
+              ref={register({ required: true })}
+              placeholder="Username: "
+              type="text"
+              name="username"
+            />
+            {errors.username && (
+              <span className="text-red-800 text-sm">Username is required</span>
+            )}
+            <Input
+              ref={register({ required: true, minLength: 6 })}
+              placeholder="Password: "
+              type="password"
+              name="password"
+            />
+            {errors.password && (
+              <span className="text-red-800 text-sm">
+                Password must be more than 6 character
+              </span>
+            )}
             <div className="flex justify-between items-center">
               <input
                 className="my-2 rounded-md cursor-pointer shadow-lg focus:ring-4 font-semibold  px-4 py-2 text-gray-200 bg-gray-900"
@@ -64,7 +122,7 @@ const Login = (): JSX.Element => {
           </form>
           <ThemeSelect />
         </div>
-      </Center>
+      </div>
     </div>
   )
 }

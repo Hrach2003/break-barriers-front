@@ -8,11 +8,11 @@ import { ThemeSelect } from '../../components/theme-select/themeSelect'
 import axios from 'axios'
 
 const SignIn = (): JSX.Element => {
-  const { register, reset, handleSubmit } = useForm()
+  const { register, handleSubmit, reset } = useForm()
   const onSubmit = async (data: any) => {
     try {
       await axios.post('https://break-barriers.herokuapp.com/api/auth/login/', {
-        data,
+        body: data,
       })
     } catch (error) {
       reset()
@@ -69,10 +69,7 @@ const SignIn = (): JSX.Element => {
                 name="password"
               />
               <div className="flex justify-between items-center">
-                <button
-                  className="my-2 rounded-md focus:ring-4 font-semibold disabled:opacity-50 px-4 py-2 text-gray-300 bg-gray-900"
-                  type="submit"
-                >
+                <button className="my-2 rounded-md focus:ring-4 font-semibold disabled:opacity-50 px-4 py-2 text-gray-300 bg-gray-900">
                   Send
                 </button>
                 <span className="dark:text-gray-200 text-gray-700">
