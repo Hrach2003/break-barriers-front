@@ -75,6 +75,7 @@ InferGetStaticPropsType<typeof getStaticProps>): JSX.Element {
                 />
                 <div className="ml-2">
                   <h2 className="text-xl">{room.title}</h2>
+                  <p>{room._id}</p>
                 </div>
               </div>
               <Center classes="h-16 w-16 rounded-full group-hover:bg-gray-700 bg-gray-500">

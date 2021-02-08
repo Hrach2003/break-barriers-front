@@ -5,15 +5,22 @@ import { Center } from '../../atoms/center'
 import { Dash } from '../../components/dash/dash'
 import { Input } from '../../components/input/input'
 import { ThemeSelect } from '../../components/theme-select/themeSelect'
-import axios from 'axios'
+import { getAPI } from '../../hooks/api'
+import { useRouter } from 'next/router'
 
 const SignIn = (): JSX.Element => {
   const { register, handleSubmit, reset } = useForm()
-  const onSubmit = async (data: any) => {
+  const router = useRouter()
+  const onSubmit = async (data: {
+    username: string
+    password: string
+    email: string
+  }): Promise<void> => {
     try {
-      await axios.post('https://break-barriers.herokuapp.com/api/auth/login/', {
-        body: data,
+      await getAPI().post('/users/create/', {
+        data,
       })
+      router.replace('/auth/login/')
     } catch (error) {
       reset()
       console.log(error)
