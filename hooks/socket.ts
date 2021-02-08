@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
-import io from 'socket.io-client'
 import { baseURL } from './api'
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const io = require('socket.io-client')
 
 export const useSocket = (
   namespace?: string,
@@ -9,7 +10,8 @@ export const useSocket = (
   const [socket, setSocket] = useState<SocketIOClient.Socket | null>(null)
 
   useEffect(() => {
-    const socketIo = io(`${baseURL}/${namespace}`, opt)
+    const socketIo = io(`${baseURL}/${namespace}/`, opt)
+    console.log(socketIo)
     console.log(`${baseURL}/${namespace}`)
     setSocket(socketIo)
     return () => {
