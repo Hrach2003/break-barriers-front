@@ -41,7 +41,8 @@ InferGetStaticPropsType<typeof getStaticProps>): JSX.Element {
         <Dash />
         <Swiper
           className="h-24 py-1"
-          slidesPerView={6}
+          slidesPerView={5}
+          spaceBetween={15}
           grabCursor
           scrollbar={{ draggable: true, hide: true }}
         >

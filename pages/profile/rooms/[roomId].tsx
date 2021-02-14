@@ -1,36 +1,43 @@
 import React, { useEffect } from 'react'
 import { useRouter } from 'next/router'
-import { useSocket } from '../../../hooks/socket'
+// import { useSocket } from '../../../hooks/socket'
 import { IMessage } from '../../../interfaces/message.interface'
 import { AxiosResponse } from 'axios'
 import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from 'next'
 import { getAPI } from '../../../hooks/api'
 import { IRoom } from '../../../interfaces/room.interface'
 import Head from 'next/head'
+import io from 'socket.io-client'
 
 export default function RoomId({
   room,
 }: InferGetStaticPropsType<typeof getStaticProps>): JSX.Element {
   const router = useRouter()
-  const socket = useSocket('rooms')
   const { roomId } = router.query
 
   useEffect(() => {
-    if (socket) {
-      socket.on('connect', () => {
-        console.log(socket.id)
-      })
-      socket.on('error', (err: any) => {
-        console.log('Sorry, there seems to be an issue with the connection!')
-        console.log(err)
-      })
-      socket.on('admin-messages', (message: IMessage) => {
-        console.log(message)
-      })
-      socket.emit('joined-room', { roomId })
-      console.log('connected: ', socket.connected)
-    } else console.log('connecting ...')
-  }, [socket, roomId])
+    const socket = io('https://break-barriers.herokuapp.com', {
+      transports: ['websocket'],
+    })
+    socket.connect()
+    console.log('called')
+
+    socket.on('connect', () => {
+      console.log(socket.id)
+    })
+    socket.on('error', ({ error }: IMessage) => {
+      console.log('Sorry, there seems to be an issue with the connection!')
+      console.log(error)
+    })
+    socket.on('admin-messages', (message: IMessage) => {
+      console.log(message)
+    })
+    socket.emit('join-room', { roomId })
+    console.log('connected: ', socket.connected)
+    return () => {
+      socket.close()
+    }
+  }, [roomId])
 
   return (
     <div>
@@ -62,6 +69,7 @@ export const getStaticProps: GetStaticProps<{
   const { data: room } = (await getAPI().get(
     `/rooms/${params?.roomId}/`
   )) as AxiosResponse<IRoom>
+
   return {
     props: {
       room,
