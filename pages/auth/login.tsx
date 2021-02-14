@@ -112,12 +112,20 @@ const Login = (): JSX.Element => {
                 type="submit"
                 value="Send"
               />
-              <span className="dark:text-gray-200 text-gray-700">
-                Create an account{' '}
-                <Link href="/auth/signin/">
-                  <a className="underline text-blue-300">here.</a>
-                </Link>
-              </span>
+              <div className="flex flex-col items-end dark:text-gray-200 text-sm tracking-wide text-gray-700">
+                <span className="">
+                  Create an account{' '}
+                  <Link href="/auth/signin/">
+                    <a className="underline text-blue-300">here.</a>
+                  </Link>
+                </span>
+                <span>
+                  Forgot password?{' '}
+                  <Link href="/auth/recover-password/">
+                    <a className="underline text-blue-300">Recover here.</a>
+                  </Link>
+                </span>
+              </div>
             </div>
           </form>
           <ThemeSelect />

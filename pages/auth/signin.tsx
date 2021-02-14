@@ -79,7 +79,7 @@ const SignIn = (): JSX.Element => {
                 <button className="my-2 rounded-md focus:ring-4 font-semibold disabled:opacity-50 px-4 py-2 text-gray-300 bg-gray-900">
                   Send
                 </button>
-                <span className="dark:text-gray-200 text-gray-700">
+                <span className="dark:text-gray-200 text-gray-700  text-sm tracking-wide">
                   Already have an account?{' '}
                   <Link href="/auth/login/">
                     <a className="underline text-blue-300">Login here.</a>
